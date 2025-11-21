@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - LIV-Lib{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Все товары</a></li>
+                <li class="breadcrumb-item active">{{ category.name }}</li>
+            </ol>
+        </nav>
+        
+        <h1>{{ category.name }}</h1>
+        {% if category.description %}
+        <p class="lead">{{ category.description }}</p>
+        {% endif %}
+        <p class="text-muted">Книг в категории: {{ products|length }}</p>
+    </div>
+</div>
+
+<div class="row">
+    {% for product in products %}
+    <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card product-card h-100">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 250px; object-fit: cover;">
+            {% else %}
+            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
+                <span class="text-muted">Нет изображения</span>
+            </div>
+            {% endif %}
+            
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ product.name }}</h5>
+                {% if product.author %}
+                <p class="card-text text-muted"><small>Автор: {{ product.author }}</small></p>
+                {% endif %}
+                <p class="card-text flex-grow-1">{{ product.description|truncatewords:15 }}</p>
+                <div class="mt-auto">
+                    <p class="card-text">
+                        <strong class="text-primary">{{ product.price }} руб.</strong>
+                    </p>
+                    <div class="d-grid">
+                        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary">В корзину</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="text-center py-5">
+            <h3 class="text-muted">В этой категории пока нет книг</h3>
+            <a href="{% url 'product_list' %}" class="btn btn-primary">Вернуться к книгам</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

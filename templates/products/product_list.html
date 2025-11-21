@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Все товары - PS Gamer{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>Все товары</h1>
+        <p class="text-muted">Найдено товаров: {{ products|length }}</p>
+    </div>
+</div>
+
+<!-- Фильтры и поиск -->
+<div class="row mb-4">
+    <div class="col-md-8">
+        <form method="get" class="d-flex">
+            <input type="text" name="q" class="form-control me-2" placeholder="Поиск товаров..." value="{{ request.GET.q }}">
+            <button type="submit" class="btn btn-outline-primary">Найти</button>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <select class="form-select" onchange="location = this.value;">
+            <option value="?sort=name">Сортировка: по названию</option>
+            <option value="?sort=price">Сортировка: по цене (возр.)</option>
+            <option value="?sort=-price">Сортировка: по цене (убыв.)</option>
+            <option value="?sort=-created_at">Сортировка: по новизне</option>
+        </select>
+    </div>
+</div>
+
+<!-- Сетка товаров -->
+<div class="row">
+    {% for product in products %}
+    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+        <div class="card product-card h-100">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+            {% else %}
+            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                <span class="text-muted">Нет изображения</span>
+            </div>
+            {% endif %}
+
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text text-muted small">{{ product.category.name }}</p>
+                <p class="card-text flex-grow-1">{{ product.description|truncatewords:10 }}</p>
+                <div class="mt-auto">
+                    <p class="card-text">
+                        <strong class="text-primary">{{ product.price }} руб.</strong>
+                    </p>
+                    <div class="d-grid gap-2">
+                        <a href="#" class="btn btn-primary">В корзину</a>
+                        <a href="{% url 'category_products' product.category.id %}" class="btn btn-outline-secondary btn-sm">
+                            Все {{ product.category.name }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="text-center py-5">
+            <h3 class="text-muted">Товары не найдены</h3>
+            <p class="text-muted">Попробуйте изменить параметры поиска</p>
+            <a href="{% url 'product_list' %}" class="btn btn-primary">Показать все товары</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
