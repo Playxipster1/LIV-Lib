@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Главная страница - LIV-Lib{% endblock %}
 
@@ -50,7 +51,7 @@
     </div>
 </div>
 
-<!-- Популярные товары -->
+<!-- Популярные книги -->
 <div class="row mt-5">
     <div class="col-12">
         <h2 style="color: #2c3e50;">Популярные книги</h2>
@@ -58,7 +59,10 @@
             <!-- Книга 1: Му Сули - Первоклассный адвокат -->
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="card product-card h-100 border-0 shadow-sm">
-                    <img src="/static/images/7266648521.jpg" class="card-img-top" alt="Первоклассный адвокат" style="height: 200px; object-fit: cover;">
+                    <!-- Соотношение 4:5 -->
+                    <div style="height: 0; padding-bottom: 125%; position: relative; overflow: hidden;">
+                        <img src="{% static 'images/7266648521.jpg' %}" class="position-absolute w-100 h-100" alt="Первоклассный адвокат" style="object-fit: cover;">
+                    </div>
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title" style="color: #2c3e50;">Первоклассный адвокат. Том 1</h5>
                         <p class="card-text text-muted">Му Сули</p>
@@ -75,7 +79,10 @@
             <!-- Книга 2: Priest - Безмолвное чтение -->
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="card product-card h-100 border-0 shadow-sm">
-                    <img src="/static/images/f83d642c-6af2-4add-bbe1-b162f9eca8e4.png" class="card-img-top" alt="Безмолвное чтение" style="height: 200px; object-fit: cover;">
+                    <!-- Соотношение 4:5 -->
+                    <div style="height: 0; padding-bottom: 125%; position: relative; overflow: hidden;">
+                        <img src="{% static 'images/f83d642c-6af2-4add-bbe1-b162f9eca8e4.png' %}" class="position-absolute w-100 h-100" alt="Безмолвное чтение" style="object-fit: cover;">
+                    </div>
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title" style="color: #2c3e50;">Безмолвное чтение. Том 1</h5>
                         <p class="card-text text-muted">Priest</p>
@@ -92,7 +99,10 @@
             <!-- Книга 3: Френсис Кель - Песнь Сорокопута -->
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="card product-card h-100 border-0 shadow-sm">
-                    <img src="/static/images/orig.jpg" class="card-img-top" alt="Песнь Сорокопута" style="height: 200px; object-fit: cover;">
+                    <!-- Соотношение 4:5 -->
+                    <div style="height: 0; padding-bottom: 125%; position: relative; overflow: hidden;">
+                        <img src="{% static 'images/orig.jpg' %}" class="position-absolute w-100 h-100" alt="Песнь Сорокопута" style="object-fit: cover;">
+                    </div>
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title" style="color: #2c3e50;">Песнь Сорокопута. Том 1</h5>
                         <p class="card-text text-muted">Френсис Кель</p>
@@ -110,7 +120,10 @@
             <!-- Книга 4: Mark Mrakovich - Evil Prevails -->
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="card product-card h-100 border-0 shadow-sm">
-                    <img src="/static/images/photo_2025-11-13_18-28-02.jpg" class="card-img-top" alt="Evil Prevails" style="height: 200px; object-fit: cover;">
+                    <!-- Соотношение 4:5 -->
+                    <div style="height: 0; padding-bottom: 125%; position: relative; overflow: hidden;">
+                        <img src="{% static 'images/photo_2025-11-13_18-28-02.jpg' %}" class="position-absolute w-100 h-100" alt="Evil Prevails" style="object-fit: cover;">
+                    </div>
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title" style="color: #2c3e50;">Evil Prevails</h5>
                         <p class="card-text text-muted">Mark Mrakovich</p>

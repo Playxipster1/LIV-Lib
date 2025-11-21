@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Корзина - LIV-Lib{% endblock %}
 
@@ -13,14 +14,14 @@
             </ol>
         </nav>
         
-        <h1>Корзина покупок</h1>
+        <h1 style="color: #2c3e50;">Корзина покупок</h1>
         
         {% if cart_items %}
         <div class="row">
             <div class="col-lg-8">
                 <!-- Список товаров в корзине -->
-                <div class="card">
-                    <div class="card-header">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-dark text-white">
                         <h5 class="mb-0">Товары в корзине ({{ cart_items|length }})</h5>
                     </div>
                     <div class="card-body p-0">
@@ -37,26 +38,23 @@
                                     {% endif %}
                                 </div>
                                 <div class="col-md-4">
-                                    <h6 class="mb-1">{{ item.product.name }}</h6>
+                                    <h6 class="mb-1" style="color: #2c3e50;">{{ item.product.name }}</h6>
                                     <p class="text-muted small mb-0">{{ item.product.category.name }}</p>
-                                    {% if item.product.author %}
-                                    <p class="text-muted small mb-0">Автор: {{ item.product.author }}</p>
-                                    {% endif %}
                                 </div>
                                 <div class="col-md-2">
-                                    <p class="mb-0"><strong>{{ item.product.price }} руб.</strong></p>
+                                    <p class="mb-0"><strong style="color: #2c3e50;">{{ item.product.price }} руб.</strong></p>
                                 </div>
                                 <div class="col-md-2">
                                     <form method="post" action="{% url 'update_cart_item' item.id %}" class="d-flex align-items-center">
                                         {% csrf_token %}
                                         <input type="number" name="quantity" value="{{ item.quantity }}" min="1" max="10" class="form-control form-control-sm" style="width: 70px;">
-                                        <button type="submit" class="btn btn-sm btn-outline-primary ms-2" title="Обновить">
+                                        <button type="submit" class="btn btn-sm btn-outline-dark ms-2" title="Обновить">
                                             <i class="fas fa-sync-alt"></i>
                                         </button>
                                     </form>
                                 </div>
                                 <div class="col-md-2">
-                                    <p class="mb-1"><strong>{{ item.total_price }} руб.</strong></p>
+                                    <p class="mb-1"><strong style="color: #2c3e50;">{{ item.total_price }} руб.</strong></p>
                                     <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Удалить товар из корзины?')">
                                         <i class="fas fa-trash"></i> Удалить
                                     </a>
@@ -69,7 +67,7 @@
                 
                 <!-- Кнопки управления корзиной -->
                 <div class="mt-3">
-                    <a href="{% url 'product_list' %}" class="btn btn-outline-primary">
+                    <a href="{% url 'product_list' %}" class="btn btn-outline-dark">
                         <i class="fas fa-arrow-left"></i> Продолжить покупки
                     </a>
                     <a href="{% url 'clear_cart' %}" class="btn btn-outline-danger float-end" onclick="return confirm('Очистить всю корзину?')">
@@ -80,14 +78,14 @@
             
             <!-- Боковая панель с итогами -->
             <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-header">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-dark text-white">
                         <h5 class="mb-0">Итоги заказа</h5>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-2">
                             <span>Товары ({{ cart.total_quantity }} шт.):</span>
-                            <span>{{ cart.total_price }} руб.</span>
+                            <span style="color: #2c3e50;">{{ cart.total_price }} руб.</span>
                         </div>
                         <div class="d-flex justify-content-between mb-2">
                             <span>Доставка:</span>
@@ -96,9 +94,9 @@
                         <hr>
                         <div class="d-flex justify-content-between mb-3">
                             <strong>Итого:</strong>
-                            <strong class="text-primary">{{ cart.total_price }} руб.</strong>
+                            <strong style="color: #2c3e50; font-size: 1.2rem;">{{ cart.total_price }} руб.</strong>
                         </div>
-                        <button class="btn btn-primary w-100" disabled>
+                        <button class="btn btn-dark w-100" disabled>
                             <i class="fas fa-lock"></i> Оформить заказ
                         </button>
                         <p class="text-muted small mt-2 text-center">
@@ -116,7 +114,7 @@
             </div>
             <h3 class="text-muted">Ваша корзина пуста</h3>
             <p class="text-muted mb-4">Добавьте товары из каталога, чтобы сделать заказ</p>
-            <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">
+            <a href="{% url 'product_list' %}" class="btn btn-dark btn-lg">
                 <i class="fas fa-book"></i> Перейти к книгам
             </a>
         </div>
