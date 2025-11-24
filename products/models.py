@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Sum
 
 class Category(models.Model):
     """Категории товаров"""
@@ -114,15 +115,21 @@ class Cart(models.Model):
         verbose_name_plural = "Корзины"
 
     def __str__(self):
-        return f"Корзина {self.user.username}"
-
-    def total_price(self):
-        """Общая стоимость корзины"""
-        return sum(item.total_price() for item in self.items.all())
+        return f"Корзина пользователя {self.user.username}"
 
     def total_quantity(self):
         """Общее количество товаров в корзине"""
-        return sum(item.quantity for item in self.items.all())
+        try:
+            return sum(item.quantity for item in self.items.all())
+        except:
+            return 0
+
+    def total_price(self):
+        """Общая стоимость корзины"""
+        try:
+            return sum(item.product.price * item.quantity for item in self.items.all())
+        except:
+            return 0
         
 class CartItem(models.Model):
     """Элемент корзины"""

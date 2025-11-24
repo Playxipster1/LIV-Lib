@@ -16,15 +16,13 @@
 <div class="row">
     <!-- Young Adult -->
     <div class="col-md-4 mb-4">
-        <div class="card h-100 text-center border-0 shadow-sm" style="border-radius: 20px;">
-            <!-- Адаптивная высота с закруглёнными краями -->
-            <img src="{% static 'images/photo_2025-11-24_16-25-21.jpg' %}" class="card-img-top" alt="Young Adult" 
-                 style="height: 200px; object-fit: cover; border-radius: 20px 20px 0 0;">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <img src="{% static 'images/photo_2025-11-24_16-25-21.jpg' %}" class="card-img-top" alt="Young Adult" style="height: 180px; object-fit: cover;">
             <div class="card-body d-flex flex-column">
                 <h3 style="color: #2c3e50;">Young Adult</h3>
                 <p style="color: #5d6d7e; flex-grow: 1;">Первая любовь, сложный выбор, поиск себя. Погрузись в истории, где подростковые мечты и проблемы сталкиваются с реальным миром.</p>
                 <div class="mt-auto">
-                    <a href="{% url 'category_products' 3 %}" class="btn btn-outline-dark w-100" style="border-radius: 10px;">Открыть дневник</a>
+                    <a href="{% url 'category_products' 3 %}" class="btn btn-outline-dark w-100">Открыть дневник</a>
                 </div>
             </div>
         </div>
@@ -32,15 +30,13 @@
 
     <!-- Fantasy -->
     <div class="col-md-4 mb-4">
-        <div class="card h-100 text-center border-0 shadow-sm" style="border-radius: 20px;">
-            <!-- Адаптивная высота с закруглёнными краями -->
-            <img src="{% static 'images/photo_2025-11-24_16-26-07.jpg' %}" class="card-img-top" alt="Fantasy" 
-                 style="height: 200px; object-fit: cover; border-radius: 20px 20px 0 0;">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <img src="{% static 'images/photo_2025-11-24_16-26-07.jpg' %}" class="card-img-top" alt="Fantasy" style="height: 180px; object-fit: cover;">
             <div class="card-body d-flex flex-column">
                 <h3 style="color: #2c3e50;">Fantasy</h3>
                 <p style="color: #5d6d7e; flex-grow: 1;">Мир магии, древние драконы, эльфы и заклинания. Открой портал в эпическое приключение, где решается судьба целых королевств.</p>
                 <div class="mt-auto">
-                    <a href="{% url 'category_products' 2 %}" class="btn btn-outline-dark w-100" style="border-radius: 10px;">Войти в мир</a>
+                    <a href="{% url 'category_products' 2 %}" class="btn btn-outline-dark w-100">Войти в мир</a>
                 </div>
             </div>
         </div>
@@ -48,15 +44,13 @@
 
     <!-- FanFiction -->
     <div class="col-md-4 mb-4">
-        <div class="card h-100 text-center border-0 shadow-sm" style="border-radius: 20px;">
-            <!-- Адаптивная высота с закруглёнными краями -->
-            <img src="{% static 'images/photo_2025-11-24_16-26-17.jpg' %}" class="card-img-top" alt="FanFiction" 
-                 style="height: 200px; object-fit: cover; border-radius: 20px 20px 0 0;">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <img src="{% static 'images/photo_2025-11-24_16-26-17.jpg' %}" class="card-img-top" alt="FanFiction" style="height: 180px; object-fit: cover;">
             <div class="card-body d-flex flex-column">
                 <h3 style="color: #2c3e50;">FanFiction</h3>
                 <p style="color: #5d6d7e; flex-grow: 1;">А что, если бы Гарри Поттер стал слизеринцем? Или Эльза встретила Арагорна? Миры сталкиваются, а каноны рушатся в творчестве фанатов.</p>
                 <div class="mt-auto">
-                    <a href="{% url 'category_products' 1 %}" class="btn btn-outline-dark w-100" style="border-radius: 10px;">Написать историю</a>
+                    <a href="{% url 'category_products' 1 %}" class="btn btn-outline-dark w-100">Написать историю</a>
                 </div>
             </div>
         </div>
@@ -70,8 +64,8 @@
         <div class="row">
             <!-- Книга 1: Му Сули - Первоклассный адвокат -->
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100 border-0 shadow-sm" style="border-radius: 15px;">
-                    <div style="height: 0; padding-bottom: 133%; position: relative; overflow: hidden; border-radius: 15px 15px 0 0;">
+                <div class="card product-card h-100 border-0 shadow-sm">
+                    <div style="height: 0; padding-bottom: 133%; position: relative; overflow: hidden;">
                         <img src="{% static 'images/7266648521.jpg' %}" class="position-absolute w-100 h-100" alt="Первоклассный адвокат" style="object-fit: cover;">
                     </div>
                     <div class="card-body d-flex flex-column">
@@ -81,7 +75,8 @@
                             <p class="card-text">
                                 <strong style="color: #2c3e50;">1299.00 руб.</strong>
                             </p>
-                            <a href="#" class="btn btn-dark w-100" style="border-radius: 8px;">В корзину</a>
+                            <!-- ИСПРАВЛЕННАЯ КНОПКА -->
+                            <a href="{% url 'add_to_cart' 20 %}" class="btn btn-dark w-100">В корзину</a>
                         </div>
                     </div>
                 </div>
@@ -89,8 +84,8 @@
 
             <!-- Книга 2: Priest - Безмолвное чтение -->
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100 border-0 shadow-sm" style="border-radius: 15px;">
-                    <div style="height: 0; padding-bottom: 133%; position: relative; overflow: hidden; border-radius: 15px 15px 0 0;">
+                <div class="card product-card h-100 border-0 shadow-sm">
+                    <div style="height: 0; padding-bottom: 133%; position: relative; overflow: hidden;">
                         <img src="{% static 'images/f83d642c-6af2-4add-bbe1-b162f9eca8e4.png' %}" class="position-absolute w-100 h-100" alt="Безмолвное чтение" style="object-fit: cover;">
                     </div>
                     <div class="card-body d-flex flex-column">
@@ -100,7 +95,8 @@
                             <p class="card-text">
                                 <strong style="color: #2c3e50;">1099.00 руб.</strong>
                             </p>
-                            <a href="#" class="btn btn-dark w-100" style="border-radius: 8px;">В корзину</a>
+                            <!-- ИСПРАВЛЕННАЯ КНОПКА -->
+                            <a href="{% url 'add_to_cart' 19 %}" class="btn btn-dark w-100">В корзину</a>
                         </div>
                     </div>
                 </div>
@@ -108,8 +104,8 @@
 
             <!-- Книга 3: Френсис Кель - Песнь Сорокопута -->
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100 border-0 shadow-sm" style="border-radius: 15px;">
-                    <div style="height: 0; padding-bottom: 133%; position: relative; overflow: hidden; border-radius: 15px 15px 0 0;">
+                <div class="card product-card h-100 border-0 shadow-sm">
+                    <div style="height: 0; padding-bottom: 133%; position: relative; overflow: hidden;">
                         <img src="{% static 'images/orig.jpg' %}" class="position-absolute w-100 h-100" alt="Песнь Сорокопута" style="object-fit: cover;">
                     </div>
                     <div class="card-body d-flex flex-column">
@@ -120,7 +116,8 @@
                             <p class="card-text">
                                 <strong style="color: #2c3e50;">1499.00 руб.</strong>
                             </p>
-                            <a href="#" class="btn btn-dark w-100" style="border-radius: 8px;">В корзину</a>
+                            <!-- ИСПРАВЛЕННАЯ КНОПКА -->
+                            <a href="{% url 'add_to_cart' 18 %}" class="btn btn-dark w-100">В корзину</a>
                         </div>
                     </div>
                 </div>
@@ -128,8 +125,8 @@
 
             <!-- Книга 4: Mark Mrakovich - Evil Prevails -->
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                <div class="card product-card h-100 border-0 shadow-sm" style="border-radius: 15px;">
-                    <div style="height: 0; padding-bottom: 133%; position: relative; overflow: hidden; border-radius: 15px 15px 0 0;">
+                <div class="card product-card h-100 border-0 shadow-sm">
+                    <div style="height: 0; padding-bottom: 133%; position: relative; overflow: hidden;">
                         <img src="{% static 'images/photo_2025-11-13_18-28-02.jpg' %}" class="position-absolute w-100 h-100" alt="Evil Prevails" style="object-fit: cover;">
                     </div>
                     <div class="card-body d-flex flex-column">
@@ -140,7 +137,8 @@
                             <p class="card-text">
                                 <strong style="color: #2c3e50;">1999.00 руб.</strong>
                             </p>
-                            <a href="#" class="btn btn-dark w-100" style="border-radius: 8px;">В корзину</a>
+                            <!-- ИСПРАВЛЕННАЯ КНОПКА -->
+                            <a href="{% url 'add_to_cart' 16 %}" class="btn btn-dark w-100">В корзину</a>
                         </div>
                     </div>
                 </div>
