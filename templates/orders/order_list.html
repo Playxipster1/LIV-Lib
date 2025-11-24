@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Мои заказы - LIV-Lib{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 style="color: #2c3e50;">Мои заказы</h1>
+    </div>
+</div>
+
+{% if orders %}
+<div class="row">
+    <div class="col-12">
+        {% for order in orders %}
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <h5>Заказ #{{ order.id }}</h5>
+                        <small class="text-muted">{{ order.created_at|date:"d.m.Y H:i" }}</small>
+                    </div>
+                    <div class="col-md-2">
+                        <span class="badge bg-primary">{{ order.get_status_display }}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong>{{ order.total_price }} руб.</strong>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <a href="{% url 'order_detail' order.id %}" class="btn btn-outline-dark btn-sm">
+                            Подробнее
+                        </a>
+                        {% if order.status == 'pending' %}
+                        <a href="{% url 'cancel_order' order.id %}" class="btn btn-outline-danger btn-sm"
+                           onclick="return confirm('Вы уверены, что хотите отменить заказ?')">
+                            Отменить
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-12">
+        <div class="text-center py-5">
+            <h3 class="text-muted">У вас еще нет заказов</h3>
+            <p class="text-muted">Сделайте свой первый заказ!</p>
+            <a href="{% url 'product_list' %}" class="btn btn-dark">Перейти к товарам</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

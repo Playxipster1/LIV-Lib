@@ -1,7 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
-from .models import Category, Product, Cart, CartItem
+from django.contrib import messages
+from django.db.models import Sum
+from .models import Category, Product, Cart, CartItem, Order, OrderItem
+from .forms import OrderForm
 
 def home(request):
     """Главная страница с шаблоном"""
@@ -28,6 +31,7 @@ def product_list(request):
     sort = request.GET.get("sort", "-created_at")
     if sort in ['name', 'price', '-price', '-created_at']:
         products = products.order_by(sort)
+    
     context = {
         'products': products,
         'search_query': search_query,
@@ -62,9 +66,15 @@ def cart_view(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
     cart_items = cart.items.select_related('product').all()
     
+    # Рассчитываем общую стоимость
+    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    total_quantity = sum(item.quantity for item in cart_items)
+    
     context = {
         'cart': cart,
         'cart_items': cart_items,
+        'total_price': total_price,
+        'total_quantity': total_quantity,
         'categories': Category.objects.all(),
     }
     return render(request, 'cart.html', context)
@@ -92,6 +102,7 @@ def add_to_cart(request, product_id):
             'message': f'Товар "{product.name}" добавлен в корзину'
         })
     
+    messages.success(request, f'Товар "{product.name}" добавлен в корзину')
     return redirect(request.META.get('HTTP_REFERER', 'product_list'))
 
 @login_required
@@ -105,8 +116,10 @@ def update_cart_item(request, item_id):
         if quantity > 0:
             cart_item.quantity = quantity
             cart_item.save()
+            messages.success(request, 'Количество товара обновлено')
         else:
             cart_item.delete()
+            messages.success(request, 'Товар удален из корзины')
     
     return redirect('cart_view')
 
@@ -114,15 +127,18 @@ def update_cart_item(request, item_id):
 def remove_from_cart(request, item_id):
     """Удаление товара из корзины"""
     cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+    product_name = cart_item.product.name
     cart_item.delete()
     
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        cart = Cart.objects.get(user=request.user)
         return JsonResponse({
             'success': True,
-            'cart_total_quantity': request.user.cart.total_quantity(),
+            'cart_total_quantity': cart.total_quantity(),
             'message': 'Товар удален из корзины'
         })
     
+    messages.success(request, f'Товар "{product_name}" удален из корзины')
     return redirect('cart_view')
 
 @login_required
@@ -131,5 +147,100 @@ def clear_cart(request):
     cart = get_object_or_404(Cart, user=request.user)
     cart.items.all().delete()
     
+    messages.success(request, 'Корзина очищена')
     return redirect('cart_view')
 
+# ========== ФУНКЦИОНАЛ ЗАКАЗОВ ==========
+
+@login_required
+def checkout(request):
+    """Оформление заказа"""
+    cart = Cart.objects.filter(user=request.user)
+    cart_items = CartItem.objects.filter(cart__user=request.user).select_related('product')
+    
+    if not cart_items.exists():
+        messages.warning(request, 'Ваша корзина пуста')
+        return redirect('cart_view')
+    
+    # Рассчитываем общую стоимость
+    total_price = sum(item.product.price * item.quantity for item in cart_items)
+    total_quantity = sum(item.quantity for item in cart_items)
+    
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            # Создаем заказ
+            order = form.save(commit=False)
+            order.user = request.user
+            order.total_price = total_price
+            order.save()
+            
+            # Создаем элементы заказа из корзины
+            for cart_item in cart_items:
+                OrderItem.objects.create(
+                    order=order,
+                    product=cart_item.product,
+                    quantity=cart_item.quantity,
+                    price=cart_item.product.price
+                )
+            
+            # Очищаем корзину
+            cart_items.delete()
+            
+            messages.success(request, f'Заказ #{order.id} успешно оформлен!')
+            return redirect('order_detail', order_id=order.id)
+        else:
+            messages.error(request, 'Пожалуйста, исправьте ошибки в форме')
+    else:
+        # Предзаполняем форму данными пользователя
+        initial_data = {
+            'email': request.user.email,
+        }
+        form = OrderForm(initial=initial_data)
+    
+    context = {
+        'form': form,
+        'cart_items': cart_items,
+        'total_price': total_price,
+        'total_quantity': total_quantity,
+        'categories': Category.objects.all(),
+    }
+    return render(request, 'orders/checkout.html', context)
+
+@login_required
+def order_detail(request, order_id):
+    """Детали заказа"""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    order_items = order.items.select_related('product').all()
+    
+    context = {
+        'order': order,
+        'order_items': order_items,
+        'categories': Category.objects.all(),
+    }
+    return render(request, 'orders/order_detail.html', context)
+
+@login_required
+def order_list(request):
+    """Список заказов пользователя"""
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    
+    context = {
+        'orders': orders,
+        'categories': Category.objects.all(),
+    }
+    return render(request, 'orders/order_list.html', context)
+
+@login_required
+def cancel_order(request, order_id):
+    """Отмена заказа"""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    
+    if order.status == 'pending':
+        order.status = 'cancelled'
+        order.save()
+        messages.success(request, f'Заказ #{order.id} отменен')
+    else:
+        messages.error(request, 'Невозможно отменить заказ в текущем статусе')
+    
+    return redirect('order_list')

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Оформление заказа - LIV-Lib{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 style="color: #2c3e50;">Оформление заказа</h1>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Форма заказа -->
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title mb-4" style="color: #2c3e50;">Данные для доставки</h3>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}
+                        <div class="form-text">{{ field.help_text }}</div>
+                        {% endif %}
+                        {% if field.errors %}
+                        <div class="text-danger">
+                            {{ field.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-dark btn-lg">Подтвердить заказ</button>
+                        <a href="{% url 'cart_view' %}" class="btn btn-outline-dark">Вернуться в корзину</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Информация о заказе -->
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title mb-4" style="color: #2c3e50;">Ваш заказ</h3>
+                
+                {% for item in cart_items %}
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <h6 class="mb-1">{{ item.product.name }}</h6>
+                        <small class="text-muted">Количество: {{ item.quantity }}</small>
+                    </div>
+                    <span class="fw-bold">{{ item.product.price }} руб.</span>
+                </div>
+                {% endfor %}
+                
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Товары ({{ total_quantity }} шт.):</span>
+                        <span>{{ total_price }} руб.</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Доставка:</span>
+                        <span class="text-success">Бесплатно</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong>Итого:</strong>
+                        <strong style="color: #2c3e50; font-size: 1.2em;">{{ total_price }} руб.</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -16,20 +16,39 @@
     <div class="col-md-8">
         <form method="get" class="d-flex">
             <input type="text" name="q" class="form-control me-2" placeholder="Поиск товаров..." value="{{ request.GET.q }}">
+            <!-- Сохраняем сортировку при поиске -->
+            {% if request.GET.sort %}
+                <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+            {% endif %}
             <button type="submit" class="btn btn-outline-dark">Найти</button>
         </form>
     </div>
     <div class="col-md-4">
-        <select class="form-select" onchange="location = this.value;">
-            <option value="?sort=name">Сортировка: по названию</option>
-            <option value="?sort=price">Сортировка: по цене (возр.)</option>
-            <option value="?sort=-price">Сортировка: по цене (убыв.)</option>
-            <option value="?sort=-created_at">Сортировка: по новизне</option>
-        </select>
+        <form method="get" id="sortForm">
+            <!-- Сохраняем поисковый запрос при смене сортировки -->
+            {% if request.GET.q %}
+                <input type="hidden" name="q" value="{{ request.GET.q }}">
+            {% endif %}
+            
+            <select name="sort" class="form-select" onchange="this.form.submit()">
+                <option value="name" {% if request.GET.sort == 'name' or not request.GET.sort %}selected{% endif %}>
+                    Сортировка: по названию
+                </option>
+                <option value="price" {% if request.GET.sort == 'price' %}selected{% endif %}>
+                    Сортировка: по цене (возр.)
+                </option>
+                <option value="-price" {% if request.GET.sort == '-price' %}selected{% endif %}>
+                    Сортировка: по цене (убыв.)
+                </option>
+                <option value="-created_at" {% if request.GET.sort == '-created_at' %}selected{% endif %}>
+                    Сортировка: по новизне
+                </option>
+            </select>
+        </form>
     </div>
 </div>
 
-<!-- Сетка товаров - ТОЧНО КАК НА ГЛАВНОЙ -->
+<!-- Сетка товаров -->
 <div class="row">
     {% for product in products %}
     <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
