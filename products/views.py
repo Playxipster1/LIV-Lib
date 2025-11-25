@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Sum
 from .models import Category, Product, Cart, CartItem, Order, OrderItem
-from .forms import OrderForm
 
 def home(request):
     popular_products = Product.objects.filter(is_available=True)[:4]
@@ -224,28 +223,16 @@ def checkout_success(request, order_id):
     return render(request, 'checkout_success.html', context)
 
 @login_required
-def order_detail(request, order_id):
-    """Детали заказа"""
-    order = get_object_or_404(Order, id=order_id, user=request.user)
-    order_items = order.items.select_related('product').all()
-    
-    context = {
-        'order': order,
-        'order_items': order_items,
-        'categories': Category.objects.all(),
-    }
-    return render(request, 'orders/order_detail.html', context)
-
-@login_required
 def order_list(request):
     """Список заказов пользователя"""
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
-    
-    context = {
-        'orders': orders,
-        'categories': Category.objects.all(),
-    }
-    return render(request, 'orders/order_list.html', context)
+    return render(request, 'orders/order_list.html', {'orders': orders})
+
+@login_required
+def order_detail(request, order_id):
+    """Детали заказа"""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, 'orders/order_detail.html', {'order': order})
 
 @login_required
 def cancel_order(request, order_id):
@@ -259,4 +246,4 @@ def cancel_order(request, order_id):
     else:
         messages.error(request, 'Невозможно отменить заказ в текущем статусе')
     
-    return redirect('order_list') 
+    return redirect('order_list')

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои заказы - LIV-Lib</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="index.html">LIV-Lib</a>
+                </div>
+                <div class="nav-menu">
+                    <a href="index.html" class="nav-link">Главная</a>
+                    <a href="catalog.html" class="nav-link">Каталог</a>
+                    <a href="orders.html" class="nav-link active">Мои заказы</a>
+                    <a href="cart.html" class="nav-link">Корзина</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1>Мои заказы</h1>
+        
+        <div class="orders-tabs">
+            <button class="tab-btn active" onclick="openTab('order-list')">Список заказов</button>
+            <button class="tab-btn" onclick="openTab('order-detail')" id="detail-tab" style="display: none;">Детали заказа</button>
+        </div>
+
+        <!-- Контейнер для списка заказов -->
+        <div id="order-list" class="tab-content active">
+            <div class="orders-container">
+                <div id="orders-list" class="orders-list">
+                    <!-- Заказы будут загружены здесь динамически -->
+                </div>
+                
+                <div id="empty-orders" class="empty-orders" style="display: none;">
+                    <p>У вас пока нет заказов</p>
+                    <a href="catalog.html" class="btn btn-primary">Перейти в каталог</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Контейнер для деталей заказа -->
+        <div id="order-detail" class="tab-content">
+            <div id="order-detail-content">
+                <!-- Детали заказа будут загружены здесь динамически -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 LIV-Lib. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script src="js/orders.js"></script>
+</body>
+</html>

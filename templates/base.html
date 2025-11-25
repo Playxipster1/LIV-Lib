@@ -47,6 +47,12 @@
             font-size: 0.7em;
             padding: 0.25em 0.5em;
         }
+
+        /* Стили для бейджа заказов */
+        .orders-badge {
+            font-size: 0.7em;
+            padding: 0.25em 0.5em;
+        }
     </style>
 
     {% block extra_css %}{% endblock %}
@@ -72,7 +78,7 @@
                         <li><a class="dropdown-item" href="{% url 'category_products' 1 %}">FanFiction</a></li>
                     </ul>
                 </div>
-            </div>
+            </div>  <!-- Закрытие navbar-nav me-auto -->
 
             <div class="navbar-nav">
                 <!-- Иконка корзины с бейджем -->
@@ -85,6 +91,19 @@
                     </span>
                     {% endif %}
                 </a>
+
+                <!-- Ссылка "Мои заказы" в навигации (опционально) -->
+                {% if user.is_authenticated %}
+                <a href="{% url 'order_list' %}" class="nav-link position-relative me-3">
+                    <i class="fas fa-clipboard-list"></i> Заказы
+                    {% if order_count and order_count > 0 %}
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary orders-badge">
+                        {{ order_count }}
+                        <span class="visually-hidden">заказов</span>
+                    </span>
+                    {% endif %}
+                </a>
+                {% endif %}
                 
                 {% if user.is_authenticated %}
                 <div class="nav-item dropdown">
@@ -93,6 +112,14 @@
                     </a>
                     <ul class="dropdown-menu user-dropdown-menu">
                         <li><a href="{% url 'profile' %}" class="dropdown-item"><i class="fas fa-user-circle"></i>Мой профиль</a></li>
+                        <li>
+                            <a href="{% url 'order_list' %}" class="dropdown-item">
+                                <i class="fas fa-clipboard-list"></i>Мои заказы
+                                {% if order_count and order_count > 0 %}
+                                <span class="badge bg-primary rounded-pill float-end">{{ order_count }}</span>
+                                {% endif %}
+                            </a>
+                        </li>
                         <li>
                             <a href="{% url 'cart_view' %}" class="dropdown-item">
                                 <i class="fas fa-shopping-cart"></i>Корзина 
@@ -112,10 +139,10 @@
                 <a href="{% url 'login' %}" class="nav-link">Войти</a>
                 <a href="{% url 'register' %}" class="nav-link">Регистрация</a>
                 {% endif %}
-            </div>
-
-        </div>
-    </nav>
+            </div>  <!-- Закрытие navbar-nav -->
+            
+        </div>  <!-- Закрытие container -->
+    </nav>  <!-- Закрытие nav -->
 
     <!-- Основной контент -->
     <main class="container my-4">
