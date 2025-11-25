@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Заказ оформлен - LIV-Lib{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-check-circle fa-5x text-success"></i>
+            </div>
+            <h1 class="display-4 text-success mb-4">Заказ успешно оформлен!</h1>
+            
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Детали заказа #{{ order.id }}</h4>
+                    <div class="row text-start">
+                        <div class="col-md-6">
+                            <p><strong>Дата заказа:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+                            <p><strong>Сумма заказа:</strong> {{ order.total_price }} руб.</p>
+                            <p><strong>Статус:</strong> <span class="badge bg-warning">{{ order.get_status_display }}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Email:</strong> {{ order.email }}</p>
+                            <p><strong>Телефон:</strong> {{ order.phone_number }}</p>
+                            <p><strong>Адрес доставки:</strong> {{ order.shipping_address }}</p>
+                            {% if order.notes %}
+                            <p><strong>Дополнительно:</strong><br>{{ order.notes|linebreaks }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="{% url 'product_list' %}" class="btn btn-dark btn-lg me-3">
+                    <i class="fas fa-book"></i> Продолжить покупки
+                </a>
+                <a href="{% url 'home' %}" class="btn btn-outline-dark btn-lg">
+                    <i class="fas fa-home"></i> На главную
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

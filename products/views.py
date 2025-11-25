@@ -75,7 +75,7 @@ def cart_view(request):
         'total_quantity': total_quantity,
         'categories': Category.objects.all(),
     }
-    return render(request, 'cart.html', context)
+    return render(request, 'cart.html', context) 
 
 @login_required
 def add_to_cart(request, product_id):
@@ -157,10 +157,13 @@ def clear_cart(request):
 @login_required
 def checkout(request):
     """Оформление заказа"""
-    cart = Cart.objects.filter(user=request.user)
-    cart_items = CartItem.objects.filter(cart__user=request.user).select_related('product')
+    try:
+        cart = Cart.objects.get(user=request.user)
+        cart_items = cart.items.select_related('product').all()
+    except Cart.DoesNotExist:
+        cart_items = []
     
-    if not cart_items.exists():
+    if not cart_items:
         messages.warning(request, 'Ваша корзина пуста')
         return redirect('cart_view')
     
@@ -169,15 +172,18 @@ def checkout(request):
     total_quantity = sum(item.quantity for item in cart_items)
     
     if request.method == 'POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            # Создаем заказ
-            order = form.save(commit=False)
-            order.user = request.user
-            order.total_price = total_price
-            order.save()
+        try:
+            # Создаем заказ с правильными именами полей
+            order = Order.objects.create(
+                user=request.user,
+                total_price=total_price,
+                shipping_address=f"{request.POST.get('city')}, {request.POST.get('address')}",
+                phone_number=request.POST.get('phone'),
+                email=request.POST.get('email'),
+                notes=f"Способ оплаты: {request.POST.get('payment_method')}\nПолучатель: {request.POST.get('first_name')} {request.POST.get('last_name')}\nИндекс: {request.POST.get('postal_code')}"
+            )
             
-            # Создаем элементы заказа из корзины
+            # Создаем элементы заказа
             for cart_item in cart_items:
                 OrderItem.objects.create(
                     order=order,
@@ -187,27 +193,35 @@ def checkout(request):
                 )
             
             # Очищаем корзину
-            cart_items.delete()
+            cart.items.all().delete()
             
             messages.success(request, f'Заказ #{order.id} успешно оформлен!')
-            return redirect('order_detail', order_id=order.id)
-        else:
-            messages.error(request, 'Пожалуйста, исправьте ошибки в форме')
-    else:
-        # Предзаполняем форму данными пользователя
-        initial_data = {
-            'email': request.user.email,
-        }
-        form = OrderForm(initial=initial_data)
+            return redirect('checkout_success', order_id=order.id)
+            
+        except Exception as e:
+            messages.error(request, f'Ошибка при оформлении заказа: {str(e)}')
     
     context = {
-        'form': form,
+        'cart': cart,
         'cart_items': cart_items,
         'total_price': total_price,
         'total_quantity': total_quantity,
         'categories': Category.objects.all(),
     }
-    return render(request, 'orders/checkout.html', context)
+    return render(request, 'checkout.html', context)
+
+@login_required
+def checkout_success(request, order_id):
+    """Страница успешного оформления заказа"""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    order_items = order.items.select_related('product').all()
+    
+    context = {
+        'order': order,
+        'order_items': order_items,
+        'categories': Category.objects.all(),
+    }
+    return render(request, 'checkout_success.html', context)
 
 @login_required
 def order_detail(request, order_id):
@@ -245,4 +259,4 @@ def cancel_order(request, order_id):
     else:
         messages.error(request, 'Невозможно отменить заказ в текущем статусе')
     
-    return redirect('order_list')
+    return redirect('order_list') 

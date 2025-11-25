@@ -166,9 +166,15 @@ class CartItem(models.Model):
         return self.product.price * self.quantity
 
 class Order(models.Model):
+    PAYMENT_METHODS = [
+        ('card', 'Банковская карта'),
+        ('cash', 'Наличными при получении'),
+        ('online', 'Онлайн-оплата'),
+    ]
+    
     STATUS_CHOICES = [
         ('pending', 'Ожидает обработки'),
-        ('processing', 'В обработке'),
+        ('confirmed', 'Подтвержден'),
         ('shipped', 'Отправлен'),
         ('delivered', 'Доставлен'),
         ('cancelled', 'Отменен'),

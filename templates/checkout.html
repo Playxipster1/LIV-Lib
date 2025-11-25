@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Оформление заказа - LIV-Lib{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Все товары</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'cart_view' %}">Корзина</a></li>
+                <li class="breadcrumb-item active">Оформление заказа</li>
+            </ol>
+        </nav>
+        
+        <h1 style="color: #2c3e50;">Оформление заказа</h1>
+        
+        {% if cart_items %}
+        <div class="row">
+            <!-- Форма оформления заказа -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Данные для доставки</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" id="checkout-form">
+                            {% csrf_token %}
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="first_name" class="form-label">Имя *</label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" required value="{{ user.first_name }}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="last_name" class="form-label">Фамилия *</label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" required value="{{ user.last_name }}">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" name="email" required value="{{ user.email }}">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="phone_{{ random_number }}" class="form-label">Телефон *</label>
+                                <input type="text" class="form-control" id="phone_{{ random_number }}" name="phone" required 
+                                    placeholder="Введите номер телефона"
+                                    autocomplete="off">
+                                <div class="form-text">Например: 89997776655 или +79997776655</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Адрес доставки *</label>
+                                <textarea class="form-control" id="address" name="address" rows="3" required placeholder="Город, улица, дом, квартира"></textarea>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="city" class="form-label">Город *</label>
+                                    <input type="text" class="form-control" id="city" name="city" required placeholder="Москва">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="postal_code" class="form-label">Почтовый индекс *</label>
+                                    <input type="text" class="form-control" id="postal_code" name="postal_code" required placeholder="123456">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="payment_method" class="form-label">Способ оплаты *</label>
+                                <select class="form-select" id="payment_method" name="payment_method" required>
+                                    <option value="">Выберите способ оплаты</option>
+                                    <option value="card">Банковская карта</option>
+                                    <option value="cash">Наличными при получении</option>
+                                    <option value="online">Онлайн-оплата</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="agree_terms" required>
+                                <label class="form-check-label" for="agree_terms">
+                                    Я соглашаюсь с <a href="#" class="text-decoration-none">условиями обработки персональных данных</a> и <a href="#" class="text-decoration-none">правилами доставки</a> *
+                                </label>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success btn-lg w-100">
+                                <i class="fas fa-credit-card"></i> Подтвердить заказ
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Информация о заказе -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Ваш заказ</h5>
+                    </div>
+                    <div class="card-body">
+                        {% for item in cart_items %}
+                        <div class="d-flex justify-content-between align-items-start mb-3 pb-3 border-bottom">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1" style="color: #2c3e50;">{{ item.product.name }}</h6>
+                                <small class="text-muted">Количество: {{ item.quantity }}</small>
+                            </div>
+                            <div class="text-end">
+                                <strong style="color: #2c3e50;">{{ item.total_price }} руб.</strong>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Товары ({{ cart.total_quantity }} шт.):</span>
+                            <span style="color: #2c3e50;">{{ cart.total_price }} руб.</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Доставка:</span>
+                            <span class="text-success">Бесплатно</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <strong>Итого к оплате:</strong>
+                            <strong style="color: #2c3e50; font-size: 1.3rem;">{{ cart.total_price }} руб.</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Информация о доставке -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h6 class="card-title">Информация о доставке</h6>
+                        <ul class="list-unstyled small">
+                            <li class="mb-2"><i class="fas fa-truck text-success me-2"></i> Бесплатная доставка</li>
+                            <li class="mb-2"><i class="fas fa-clock text-primary me-2"></i> Срок доставки: 2-5 дней</li>
+                            <li class="mb-2"><i class="fas fa-map-marker-alt text-danger me-2"></i> Доставляем по всей России</li>
+                            <li><i class="fas fa-phone text-info me-2"></i> Контакты: 8-800-123-45-67</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- Пустая корзина -->
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-shopping-cart fa-4x text-muted"></i>
+            </div>
+            <h3 class="text-muted">Ваша корзина пуста</h3>
+            <p class="text-muted mb-4">Добавьте товары в корзину для оформления заказа</p>
+            <a href="{% url 'product_list' %}" class="btn btn-dark btn-lg">
+                <i class="fas fa-book"></i> Перейти к книгам
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('checkout-form');
+    
+    form.addEventListener('submit', function(e) {
+        const agreeCheckbox = document.getElementById('agree_terms');
+        if (!agreeCheckbox.checked) {
+            e.preventDefault();
+            alert('Пожалуйста, согласитесь с условиями обработки персональных данных');
+            return false;
+        }
+    });
+    
+    // Маска для телефона
+    const phoneInput = document.getElementById('phone');
+    phoneInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 0) {
+            value = '+7 (' + value;
+            if (value.length > 7) value = value.slice(0, 7) + ') ' + value.slice(7);
+            if (value.length > 12) value = value.slice(0, 12) + '-' + value.slice(12);
+            if (value.length > 15) value = value.slice(0, 15) + '-' + value.slice(15);
+        }
+        e.target.value = value;
+    });
+});
+</script>
+{% endblock %}
+
+<div class="mb-3">
+    <label for="phone" class="form-label">Телефон *</label>
+    <input type="tel" class="form-control" id="phone" name="phone" required placeholder="+7 (999) 999-99-99">
+</div>
