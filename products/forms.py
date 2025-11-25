@@ -1,5 +1,7 @@
 from django import forms
 from .models import Order
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordChangeForm
 
 class OrderForm(forms.ModelForm):
     class Meta:
@@ -31,3 +33,24 @@ class OrderForm(forms.ModelForm):
             'email': 'Email',
             'notes': 'Примечания к заказу',
         }
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+        labels = {
+            'first_name': 'Имя',
+            'last_name': 'Фамилия', 
+            'email': 'Email адрес'
+        }
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите ваше имя'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите вашу фамилию'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Введите ваш email'}),
+        }
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control'})

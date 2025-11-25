@@ -4,124 +4,165 @@
 {% block title %}Регистрация - LIV-Lib{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header bg-dark text-white">
-                <h4 class="card-title mb-0">Регистрация в LIV-Lib</h4>
-            </div>
-            <div class="card-body">
-                <!-- Сообщения -->
-                {% if messages %}
-                <div class="messages mb-3">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <!-- Заголовок -->
+                    <div class="text-center mb-4">
+                        <h2 style="color: #2c3e50;">Регистрация в LIV-Lib</h2>
+                        <p class="text-muted">Создайте новый аккаунт</p>
+                    </div>
+
+                    <!-- Сообщения -->
+                    {% if messages %}
                     {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                     {% endfor %}
-                </div>
-                {% endif %}
+                    {% endif %}
 
-                <form method="post" novalidate>
-                    {% csrf_token %}
+                    <form method="post" novalidate>
+                        {% csrf_token %}
 
-                    <!-- Поля формы -->
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
-                                Имя *
+                        <!-- Поля имени и фамилии -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label" style="color: #2c3e50;">
+                                    Имя *
+                                </label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                <div class="text-danger small">
+                                    {{ form.first_name.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label" style="color: #2c3e50;">
+                                    Фамилия *
+                                </label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                <div class="text-danger small">
+                                    {{ form.last_name.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Имя пользователя -->
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label" style="color: #2c3e50;">
+                                Имя пользователя *
                             </label>
-                            {{ form.first_name }}
-                            {% if form.first_name.errors %}
+                            {{ form.username }}
+                            {% if form.username.errors %}
                             <div class="text-danger small">
-                                {{ form.first_name.errors }}
+                                {{ form.username.errors }}
+                            </div>
+                            {% endif %}
+                            <div class="form-text text-muted">Минимум 3 символа</div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label" style="color: #2c3e50;">
+                                Email адрес *
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <div class="text-danger small">
+                                {{ form.email.errors }}
                             </div>
                             {% endif %}
                         </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
-                                Фамилия *
+                        <!-- Пароль -->
+                        <div class="mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label" style="color: #2c3e50;">
+                                Пароль *
                             </label>
-                            {{ form.last_name }}
-                            {% if form.last_name.errors %}
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
                             <div class="text-danger small">
-                                {{ form.last_name.errors }}
+                                {{ form.password1.errors }}
+                            </div>
+                            {% endif %}
+                            <div class="form-text text-muted">
+                                Пароль должен содержать минимум 8 символов, не быть слишком простым.
+                            </div>
+                        </div>
+
+                        <!-- Подтверждение пароля -->
+                        <div class="mb-4">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label" style="color: #2c3e50;">
+                                Подтверждение пароля *
+                            </label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                            <div class="text-danger small">
+                                {{ form.password2.errors }}
                             </div>
                             {% endif %}
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">
-                            Имя пользователя *
-                        </label>
-                        {{ form.username }}
-                        {% if form.username.errors %}
-                        <div class="text-danger small">
-                            {{ form.username.errors }}
-                        </div>
-                        {% endif %}
-                        <div class="form-text">Минимум 3 символа</div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="{{ form.email.id_for_label }}" class="form-label">
-                            Email адрес *
-                        </label>
-                        {{ form.email }}
-                        {% if form.email.errors %}
-                        <div class="text-danger small">
-                            {{ form.email.errors }}
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="{{ form.password1.id_for_label }}" class="form-label">
-                            Пароль *
-                        </label>
-                        {{ form.password1 }}
-                        {% if form.password1.errors %}
-                        <div class="text-danger small">
-                            {{ form.password1.errors }}
-                        </div>
-                        {% endif %}
-                        <div class="form-text">
-                            Пароль должен содержать минимум 8 символов, не быть слишком простым.
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="{{ form.password2.id_for_label }}" class="form-label">
-                            Подтверждение пароля *
-                        </label>
-                        {{ form.password2 }}
-                        {% if form.password2.errors %}
-                        <div class="text-danger small">
-                            {{ form.password2.errors }}
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-dark btn-lg">
-                            Зарегистрироваться
+                        <!-- Кнопка регистрации -->
+                        <button type="submit" class="btn btn-dark w-100 py-2 mb-3" 
+                                style="border-radius: 8px; font-size: 1.1rem;">
+                            <i class="fas fa-user-plus me-2"></i>Зарегистрироваться
                         </button>
+                    </form>
+
+                    <!-- Разделитель -->
+                    <hr class="my-4">
+
+                    <!-- Ссылка на вход -->
+                    <div class="text-center">
+                        <p class="text-muted mb-2">Уже есть аккаунт?</p>
+                        <a href="{% url 'login' %}" class="btn btn-outline-dark">
+                            <i class="fas fa-sign-in-alt me-2"></i>Войти в систему
+                        </a>
                     </div>
-                </form>
-
-                <hr>
-
-                <div class="text-center">
-                    <p class="mb-0">Уже есть аккаунт?</p>
-                    <a href="{% url 'login' %}" class="btn btn-outline-dark">
-                        Войти в систему
-                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    padding: 12px;
+}
+
+.form-control:focus {
+    border-color: #2c3e50;
+    box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.1);
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+</style>
 {% endblock %}

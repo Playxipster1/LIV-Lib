@@ -3,7 +3,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import CustomUserCreationForm, LoginForm
-
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from .forms import UserProfileForm, CustomPasswordChangeForm
+from products.models import Category
 
 def register(request):
     if request.method == 'POST':
@@ -66,3 +69,42 @@ def profile_edit(request):
         messages.success(request, "Профиль успешно обновлен!")
         return redirect('profile')
     return render(request, "accounts/profile_edit.html")
+
+@login_required
+def edit_profile(request):
+    """Редактирование профиля пользователя"""
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Профиль успешно обновлен!')
+            return redirect('profile')
+    else:
+        form = UserProfileForm(instance=request.user)
+    
+    context = {
+        'form': form,
+        'categories': Category.objects.all(),
+    }
+    return render(request, 'accounts/edit_profile.html', context)
+
+@login_required
+def change_password(request):
+    """Смена пароля пользователя"""
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Обновляем сессию
+            messages.success(request, 'Пароль успешно изменен!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Пожалуйста, исправьте ошибки ниже.')
+    else:
+        form = CustomPasswordChangeForm(request.user)
+    
+    context = {
+        'form': form,
+        'categories': Category.objects.all(),
+    }
+    return render(request, 'accounts/change_password.html', context)

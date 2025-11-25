@@ -7,7 +7,7 @@ urlpatterns = [
     path('category/<int:category_id>/', views.category_products, name='category_products'),
     path('about/', views.about, name='about'),
     
-    # Корзина - только один маршрут для cart/
+    # Корзина
     path('cart/', views.cart_view, name='cart_view'),
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('cart/update/<int:item_id>/', views.update_cart_item, name='update_cart_item'),
@@ -20,6 +20,10 @@ urlpatterns = [
     path('orders/<int:order_id>/', views.order_detail, name='order_detail'),
     path('orders/cancel/<int:order_id>/', views.cancel_order, name='cancel_order'),
     
-    # Успешное оформление заказа - только один маршрут
+    # Успешное оформление заказа
     path('checkout/success/<int:order_id>/', views.checkout_success, name='checkout_success'),
+
+    # Редактирование профиля
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('profile/change-password/', views.change_password, name='change_password'),
 ]

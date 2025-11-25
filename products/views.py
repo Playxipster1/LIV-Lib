@@ -4,6 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Sum
 from .models import Category, Product, Cart, CartItem, Order, OrderItem
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from .forms import UserProfileForm, CustomPasswordChangeForm
 
 def home(request):
     popular_products = Product.objects.filter(is_available=True)[:4]
@@ -247,3 +250,42 @@ def cancel_order(request, order_id):
         messages.error(request, 'Невозможно отменить заказ в текущем статусе')
     
     return redirect('order_list')
+
+@login_required
+def edit_profile(request):
+    """Редактирование профиля пользователя"""
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Профиль успешно обновлен!')
+            return redirect('profile')
+    else:
+        form = UserProfileForm(instance=request.user)
+    
+    context = {
+        'form': form,
+        'categories': Category.objects.all(),
+    }
+    return render(request, 'accounts/edit_profile.html', context)
+
+@login_required
+def change_password(request):
+    """Смена пароля пользователя"""
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Обновляем сессию
+            messages.success(request, 'Пароль успешно изменен!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Пожалуйста, исправьте ошибки ниже.')
+    else:
+        form = CustomPasswordChangeForm(request.user)
+    
+    context = {
+        'form': form,
+        'categories': Category.objects.all(),
+    }
+    return render(request, 'accounts/change_password.html', context)

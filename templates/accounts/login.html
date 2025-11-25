@@ -1,69 +1,93 @@
-[file name]: login.html
-[file content begin]
+<!-- templates/accounts/login.html -->
 {% extends 'base.html' %}
-
-{% block title %}Вход в систему - LIV-Lib{% endblock %}
+{% load static %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card">
-            <div class="card-header bg-dark text-white">
-                <h4 class="card-title mb-0">Вход в LIV-Lib</h4>
-            </div>
-            <div class="card-body">
-                <!-- Сообщения -->
-                {% if messages %}
-                <div class="messages mb-3">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 style="color: #2c3e50;">Вход в LIV-Lib</h2>
+                        <p class="text-muted">Войдите в свой аккаунт</p>
+                    </div>
+
+                    {% if messages %}
                     {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                     {% endfor %}
-                </div>
-                {% endif %}
+                    {% endif %}
 
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">
-                            Имя пользователя
-                        </label>
-                        {{ form.username }}
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="{{ form.password.id_for_label }}" class="form-label">
-                            Пароль
-                        </label>
-                        {{ form.password }}
-                    </div>
-                    
-                    <input type="hidden" name="next" value="{{ request.GET.next }}">
-                    
-                    <div class="d-grid mb-3">
-                        <button type="submit" class="btn btn-dark btn-lg">
-                            Войти
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="username" class="form-label" style="color: #2c3e50;">Имя пользователя</label>
+                            <input type="text" class="form-control" id="username" name="username" 
+                                   placeholder="Введите имя пользователя" required
+                                   style="border-radius: 8px; border: 1px solid #e9ecef; padding: 12px;">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password" class="form-label" style="color: #2c3e50;">Пароль</label>
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   placeholder="Введите пароль" required
+                                   style="border-radius: 8px; border: 1px solid #e9ecef; padding: 12px;">
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100 py-2 mb-3" 
+                                style="border-radius: 8px; font-size: 1.1rem;">
+                            <i class="fas fa-sign-in-alt me-2"></i>Войти
                         </button>
-                    </div>
-                    
+
+                        <div class="text-center">
+                            <a href="#" class="text-muted text-decoration-none small">
+                                Забыли пароль?
+                            </a>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+
                     <div class="text-center">
-                        <a href="#" class="text-dark">Забыли пароль?</a>
+                        <p class="text-muted mb-2">Еще нет аккаунта?</p>
+                        <a href="{% url 'register' %}" class="btn btn-outline-dark">
+                            <i class="fas fa-user-plus me-2"></i>Зарегистрироваться
+                        </a>
                     </div>
-                </form>
-                
-                <hr>
-                
-                <div class="text-center">
-                    <p class="mb-0">Еще нет аккаунта?</p>
-                    <a href="{% url 'register' %}" class="btn btn-outline-dark">
-                        Зарегистрироваться
-                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+}
+
+.form-control:focus {
+    border-color: #2c3e50;
+    box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.1);
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+</style>
 {% endblock %}
