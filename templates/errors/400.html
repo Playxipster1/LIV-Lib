@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="row">
+        <div class="col-12">
+            <i class="fas fa-exclamation-circle fa-5x text-info mb-4"></i>
+            <h1 style="color: #2c3e50;">400 - Неверный запрос</h1>
+            <p class="lead text-muted mb-4">Ваш браузер отправил неверный запрос.</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="{% url 'home' %}" class="btn btn-dark">
+                    <i class="fas fa-home me-2"></i>На главную
+                </a>
+                <a href="{% url 'product_list' %}" class="btn btn-outline-dark">
+                    <i class="fas fa-shopping-bag me-2"></i>К товарам
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

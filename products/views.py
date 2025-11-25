@@ -7,6 +7,25 @@ from .models import Category, Product, Cart, CartItem, Order, OrderItem
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from .forms import UserProfileForm, CustomPasswordChangeForm
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, redirect
+
+# Обработка ошибок
+def custom_404(request, exception):
+    """Запрашиваемая страница не существует"""
+    return render(request, 'errors/404.html', status=404)
+
+def custom_500(request):
+    """Серверная ошибка 500"""
+    return render(request, 'errors/500.html', status=500)
+
+def custom_403(request, exception):
+    """Нет доступа к страницке 403"""
+    return render(request, 'errors/403.html', status=403)
+
+def custom_400(request, exception):
+    """Браузер отправил неверный запрос 400"""
+    return render(request, 'errors/400.html', status=400)
 
 def home(request):
     popular_products = Product.objects.filter(is_available=True)[:4]
@@ -22,12 +41,12 @@ def product_list(request):
     products = Product.objects.filter(is_available=True)
     categories = Category.objects.all()
 
-    # Поиск
+    # Поиск товаров
     search_query = request.GET.get('q', '')
     if search_query:
         products = products.filter(name__icontains=search_query)
 
-    # Сортировка
+    # Сортировка товаров
     sort = request.GET.get("sort", "-created_at")
     if sort in ['name', 'price', '-price', '-created_at']:
         products = products.order_by(sort)
@@ -66,7 +85,7 @@ def cart_view(request):
     cart, created = Cart.objects.get_or_create(user=request.user)
     cart_items = cart.items.select_related('product').all()
     
-    # Рассчитываем общую стоимость
+    # Расчёт общей стоимости
     total_price = sum(item.product.price * item.quantity for item in cart_items)
     total_quantity = sum(item.quantity for item in cart_items)
     
@@ -95,7 +114,7 @@ def add_to_cart(request, product_id):
         cart_item.quantity += 1
         cart_item.save()
     
-    # Пересчитываем общее количество
+    # Счёт общего количества
     total_quantity = cart.total_quantity()
     
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -154,8 +173,7 @@ def clear_cart(request):
     messages.success(request, 'Корзина очищена')
     return redirect('cart_view')
 
-# ========== ФУНКЦИОНАЛ ЗАКАЗОВ ==========
-
+# Заказная часть
 @login_required
 def checkout(request):
     """Оформление заказа"""
@@ -169,13 +187,12 @@ def checkout(request):
         messages.warning(request, 'Ваша корзина пуста')
         return redirect('cart_view')
     
-    # Рассчитываем общую стоимость
+    # Расчёт общей стоимости
     total_price = sum(item.product.price * item.quantity for item in cart_items)
     total_quantity = sum(item.quantity for item in cart_items)
     
     if request.method == 'POST':
         try:
-            # Создаем заказ с правильными именами полей
             order = Order.objects.create(
                 user=request.user,
                 total_price=total_price,
@@ -185,7 +202,7 @@ def checkout(request):
                 notes=f"Способ оплаты: {request.POST.get('payment_method')}\nПолучатель: {request.POST.get('first_name')} {request.POST.get('last_name')}\nИндекс: {request.POST.get('postal_code')}"
             )
             
-            # Создаем элементы заказа
+            # Создание элементов заказа
             for cart_item in cart_items:
                 OrderItem.objects.create(
                     order=order,
@@ -194,7 +211,6 @@ def checkout(request):
                     price=cart_item.product.price
                 )
             
-            # Очищаем корзину
             cart.items.all().delete()
             
             messages.success(request, f'Заказ #{order.id} успешно оформлен!')
@@ -276,11 +292,9 @@ def change_password(request):
         form = CustomPasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)  # Обновляем сессию
+            update_session_auth_hash(request, user)
             messages.success(request, 'Пароль успешно изменен!')
             return redirect('profile')
-        else:
-            messages.error(request, 'Пожалуйста, исправьте ошибки ниже.')
     else:
         form = CustomPasswordChangeForm(request.user)
     
@@ -289,3 +303,19 @@ def change_password(request):
         'categories': Category.objects.all(),
     }
     return render(request, 'accounts/change_password.html', context)
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=username, password=password)  # 👈 Желтое - ИГНОРИРУЕМ
+        
+        if user is not None:
+            login(request, user)  # 👈 Желтое - ИГНОРИРУЕМ
+            messages.success(request, f'Добро пожаловать, {user.username}!')
+            return redirect('home')
+        else:
+            messages.error(request, 'Неверное имя пользователя или пароль')
+    
+    return render(request, 'accounts/login.html')

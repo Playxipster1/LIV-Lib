@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="row">
+        <div class="col-12">
+            <i class="fas fa-server fa-5x text-danger mb-4"></i>
+            <h1 style="color: #2c3e50;">500 - Ошибка сервера</h1>
+            <p class="lead text-muted mb-4">На сервере произошла непредвиденная ошибка. Мы уже работаем над исправлением.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'home' %}" class="btn btn-dark">
+                    <i class="fas fa-home me-2"></i>На главную
+                </a>
+                <a href="{% url 'product_list' %}" class="btn btn-outline-dark">
+                    <i class="fas fa-shopping-bag me-2"></i>К товарам
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -128,30 +128,41 @@
                                 {% endif %}
                             </a>
                         </li>
-                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
                         {% if user.is_staff %}
-                        <li><a href="/admin/" class="dropdown-item"><i class="fas fa-cog"></i>Админ-панель</a></li>
+                        <li>
+                            <a href="/admin/" class="dropdown-item">
+                                <i class="fas fa-cog"></i>Админ-панель
+                            </a>
+                        </li>
                         {% endif %}
-                        <li><a href="{% url 'logout' %}" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt"></i>Выйти</a></li>
+                        <li>
+                            <form method="post" action="{% url 'logout' %}" class="d-inline w-100">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100 text-start" style="cursor: pointer;">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                                </button>
+                            </form>
+                        </li>
                     </ul>
                 </div>
                 {% else %}
                 <a href="{% url 'login' %}" class="nav-link">Войти</a>
                 <a href="{% url 'register' %}" class="nav-link">Регистрация</a>
                 {% endif %}
-            </div>  <!-- Закрытие navbar-nav -->
-            
-        </div>  <!-- Закрытие container -->
-    </nav>  <!-- Закрытие nav -->
+            </div>
+        </div>
+    </nav>
 
     <!-- Основной контент -->
     <main class="container my-4">
         {% block content %}
-        <!-- Содержимое страниц будет здесь -->
         {% endblock %}
     </main>
 
-    <!-- Подвал -->
+    <!-- Нижняя плашка -->
     <footer class="footer mt-5">
         <div class="container text-center">
             <p>&copy; 2025 LIV-Lib. Все права защищены.</p>
@@ -166,3 +177,5 @@
     {% block extra_js %}{% endblock %}
 </body>
 </html>
+
+<a href="{% url 'logout' %}" class="dropdown-item text-danger">
